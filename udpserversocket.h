@@ -1,12 +1,12 @@
-#include "udpsocket.h"
-
 #ifndef UDPSERVERSOCKET_H
 #define UDPSERVERSOCKET_H
-class UDPServerSocket : public UDPSocket
-{
+
+#include <udpsocket.h>
+
+class UDPServerSocket : public UDPSocket {
 public:
-UDPServerSocket ();
-bool initializeServer (char * _myAddr, int _myPort);
-~UDPServerSocket ( );
+    UDPServerSocket ();
+    bool initializeServer (char * _myAddr, int _myPort);
+    ~UDPServerSocket ( );
 };
-#endif // UDPSERVERSOCKET_H
+#endif // UDPSERVERSOCKET_H 
