@@ -6,10 +6,11 @@
 
 class Client {
 private:
-    UDPClientSocket * udpSocket;
+    UDPClientSocket * udpClientSocket;
 
 public:
     Client(char * _hostname, int _port);
+    void send_request(char* message);
     Message * execute(Message * _message);
     ~Client();
 };

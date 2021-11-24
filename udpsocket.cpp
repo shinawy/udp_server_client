@@ -1,7 +1,22 @@
 #include "udpsocket.h"
+#define MAXLINE 1024
+#define PORT 8080
 
 UDPSocket:: UDPSocket (){
-    
+    sock;
+    char buffer[MAXLINE];
+       
+    // Creating socket file descriptor
+    if ( (sock= socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
+        perror("socket creation failed");
+        exit(EXIT_FAILURE);
+    }
+       
+    memset(&myAddr, 0, sizeof(myAddr));
+    memset(&peerAddr, 0, sizeof(peerAddr));
+       
+   
+
 }
 void UDPSocket:: setFilterAddress (char * _filterAddress){
 

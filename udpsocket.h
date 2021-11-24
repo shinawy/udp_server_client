@@ -14,7 +14,7 @@
 using namespace std;
 
 class UDPSocket {
-protected:
+public:
     int sock;
     sockaddr_in myAddr;
     sockaddr_in peerAddr;
