@@ -1,0 +1,5 @@
+run: serv.exe
+	./serv.exe
+
+serv.exe: main_server.cpp client.cpp message.cpp server.cpp udpclientsocket.cpp udpserversocket.cpp udpsocket.cpp
+	g++ main_server.cpp client.cpp message.cpp server.cpp udpclientsocket.cpp udpserversocket.cpp udpsocket.cpp -o serv.exe 
