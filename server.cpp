@@ -24,7 +24,7 @@ socklen_t len;
    
    n = recvfrom(udpServerSocket->sock,  (Message*)message_buffer, MAXLINE, 
                 MSG_WAITALL, ( struct sockaddr *) &udpServerSocket->peerAddr,&len);
-    client_message = (Message *)`;
+    client_message = (Message *)message_buffer; 
     cout<<"received 5las"<<endl;
     cout<<"Size of the Message object : " <<  sizeof(*client_message)<<endl;
 
