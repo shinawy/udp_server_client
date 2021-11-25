@@ -3,6 +3,7 @@
 #define PORT 8080
 
 UDPSocket:: UDPSocket (){
+    cout<<"hi from udp socket constructor\n";
     int sock;
     char buffer[MAXLINE];
        

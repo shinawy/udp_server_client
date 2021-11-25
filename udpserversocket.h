@@ -7,8 +7,8 @@
 
 class UDPServerSocket : public UDPSocket {
 public:
-    UDPServerSocket (): UDPSocket(){};
+    UDPServerSocket ();
     bool initializeServer (char * _myAddr, int _myPort);
-    ~UDPServerSocket ( );
+    ~UDPServerSocket ();
 };
 #endif // UDPSERVERSOCKET_H 

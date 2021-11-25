@@ -32,5 +32,6 @@ int len, n;
 }
 
 Server::~Server(){
+    delete udpServerSocket;
 
 }

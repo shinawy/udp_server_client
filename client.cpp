@@ -2,6 +2,7 @@
 #define MAXLINE 1024
 
 Client:: Client(char * _hostname, int _port){
+udpClientSocket= new UDPClientSocket();
 udpClientSocket ->initializeClient(_hostname, _port);
 }
 
@@ -25,5 +26,5 @@ Message * Client:: execute(Message * _message){
 }
 
 Client:: ~Client(){
-
+delete udpClientSocket;
 }
