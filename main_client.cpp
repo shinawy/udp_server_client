@@ -4,11 +4,16 @@
 #include "udpclientsocket.h"
 #include "udpserversocket.h"
 #include "udpsocket.h"
+#include <string>
 
 int main(){
     cout<<"hello from client\n"; 
     Client myclient("macoclient", 8080);
-    myclient.send_request("happy thanksgiving\n");
-
+    // char comm[1024];
+    string comm; 
+    do{
+    getline(cin,comm);
+    myclient.send_request((char*)comm.c_str());
+    }while (comm != "wq!");
     return 0; 
 }

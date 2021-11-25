@@ -20,6 +20,8 @@ socklen_t len;
     len = sizeof(udpServerSocket-> peerAddr);  //len is value/resuslt
     cout<<"len: "<<len<<endl;
    char buffer[MAXLINE];
+   while(true){
+
     n = recvfrom(udpServerSocket->sock, (char *)buffer, MAXLINE, 
                 MSG_WAITALL, ( struct sockaddr *) &udpServerSocket->peerAddr,&len);
 
@@ -29,8 +31,8 @@ socklen_t len;
     sendto(udpServerSocket->sock, (const char *)hello_server, strlen(hello_server), 
         MSG_CONFIRM, (const struct sockaddr *) &udpServerSocket->peerAddr,
             len);
-    printf("Hello message sent.\n");
-
+    // printf("Hello message sent.\n");
+   }
 
 }
 

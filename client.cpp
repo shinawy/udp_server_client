@@ -13,7 +13,7 @@ socklen_t len;
     sendto(udpClientSocket -> sock, (const char *)message, strlen(message),
         MSG_CONFIRM, (const struct sockaddr *) &udpClientSocket->myAddr, 
             sizeof(udpClientSocket->myAddr));
-    printf("Hello message sent.\n");
+    // printf("Hello message sent.\n");
            
     n = recvfrom(udpClientSocket -> sock, (char *)buffer, MAXLINE, 
                 MSG_WAITALL, (struct sockaddr *) &udpClientSocket->myAddr,
