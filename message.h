@@ -18,17 +18,17 @@ class Message {
 private:
     MessageType message_type;
     int operation;
-    void * message;
+    char * message;             //CHANGED FROM void * to char *
     size_t message_size;
     int rpc_id;
 
 public:
-    Message(int operation, void * p_message, size_t p_message_size,int p_rpc_id);
+    Message(int operation, char * p_message, size_t p_message_size,int p_rpc_id); //CHANGED FROM void * to char *
     Message(char * marshalled_base64);
     char * marshal ();
     int getOperation ();
     int getRPCId();
-    void * getMessage();
+    char * getMessage();    //CHANGED FROM void * to char *
     size_t getMessageSize();
     MessageType getMessageType();
     void setOperation (int _operation);

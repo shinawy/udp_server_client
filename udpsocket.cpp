@@ -3,7 +3,7 @@
 #define PORT 8080
 
 UDPSocket:: UDPSocket (){
-    sock;
+    int sock;
     char buffer[MAXLINE];
        
     // Creating socket file descriptor
@@ -14,10 +14,8 @@ UDPSocket:: UDPSocket (){
        
     memset(&myAddr, 0, sizeof(myAddr));
     memset(&peerAddr, 0, sizeof(peerAddr));
-       
-   
-
 }
+
 void UDPSocket:: setFilterAddress (char * _filterAddress){
 
 

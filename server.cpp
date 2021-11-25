@@ -1,9 +1,15 @@
 #include "server.h"
 #define MAXLINE 1024
+
 Server::Server(char * _listen_hostname, int _listen_port){
+    udpServerSocket = new UDPServerSocket();
 
-udpServerSocket -> initializeServer(_listen_hostname, _listen_port);
-
+    bool x  = udpServerSocket -> initializeServer(_listen_hostname, _listen_port);
+    if (x) {
+        printf("Server Intialized.\n");
+    } else {
+        printf("Error: Server Not Intialized.\n");
+    }
 }
 
 void Server::serveRequest(){

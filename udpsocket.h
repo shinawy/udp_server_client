@@ -16,8 +16,8 @@ using namespace std;
 class UDPSocket {
 public:
     int sock;
-    sockaddr_in myAddr;
-    sockaddr_in peerAddr;
+    struct sockaddr_in myAddr;
+    struct sockaddr_in peerAddr;
     char * myAddress;
     char * peerAddress;
     int myPort;
