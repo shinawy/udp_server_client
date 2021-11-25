@@ -4,7 +4,6 @@
 
 UDPSocket:: UDPSocket (){
     cout<<"hi from udp socket constructor\n";
-    int sock;
     char buffer[MAXLINE];
        
     // Creating socket file descriptor
@@ -118,6 +117,7 @@ int UDPSocket:: getSocketHandler(){
 }
 
 UDPSocket:: ~UDPSocket ( ){
-
+cout<<"socket closed in the udpsocket destructor\n";
+close (sock);
 
 }

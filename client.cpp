@@ -7,7 +7,8 @@ udpClientSocket ->initializeClient(_hostname, _port);
 }
 
 void Client::send_request(char* message){
-int n, len;
+int n;
+socklen_t len; 
        char* buffer [MAXLINE];
     sendto(udpClientSocket -> sock, (const char *)message, strlen(message),
         MSG_CONFIRM, (const struct sockaddr *) &udpClientSocket->myAddr, 
@@ -16,7 +17,7 @@ int n, len;
            
     n = recvfrom(udpClientSocket -> sock, (char *)buffer, MAXLINE, 
                 MSG_WAITALL, (struct sockaddr *) &udpClientSocket->myAddr,
-                (socklen_t *)&len);
+               &len);
     buffer[n] = "\0";
     printf("Server : %s\n", buffer);
 }
