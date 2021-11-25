@@ -6,11 +6,18 @@ udpClientSocket= new UDPClientSocket();
 udpClientSocket ->initializeClient(_hostname, _port);
 }
 
-void Client::send_request(char* message){
+void Client::send_request(Message* class_message){
 int n;
 socklen_t len; 
        char* buffer [MAXLINE];
-    sendto(udpClientSocket -> sock, (const char *)message, strlen(message),
+       char* marshaled_message= class_message->marshal();
+       class_message->setMessage(marshaled_message,strlen(marshaled_message));
+    
+
+    char *message = new char[sizeof(*class_message)];
+     message = (char *)class_message;
+
+    sendto(udpClientSocket -> sock, (const Message*)message, sizeof(*class_message),
         MSG_CONFIRM, (const struct sockaddr *) &udpClientSocket->myAddr, 
             sizeof(udpClientSocket->myAddr));
     // printf("Hello message sent.\n");

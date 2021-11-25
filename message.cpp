@@ -3,9 +3,14 @@
 char char_set[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 #define SIZE 1000
 
+Message:: Message(){
+message_size=4096;
+}
+
 //CHANGED void * to char *
-Message:: Message(int operation, char * p_message, size_t p_message_size,int p_rpc_id){
-    operation = operation;
+Message:: Message(MessageType p_message_type,int p_operation, char * p_message, size_t p_message_size,int p_rpc_id){
+    message_type= p_message_type;
+    operation = p_operation;
     message = p_message;
     message_size = p_message_size;
     rpc_id = p_rpc_id;
@@ -18,7 +23,8 @@ Message:: Message(char * marshalled_base64){
 char * Message:: marshal (){
     char *marshalled_message = (char *) malloc(SIZE * sizeof(char));
     int msg_size = message_size;
-      
+    
+    char* message_char= (char*) message;
     int index, no_of_bits = 0, padding = 0, val = 0, count = 0, temp;
     int i, j, k = 0;
       
@@ -27,7 +33,7 @@ char * Message:: marshal (){
   
             for (j = i; j < msg_size && j <= i + 2; j++) {
                 val = val << 8;
-                val = val | message[j];
+                val = val | message_char[j];
                 count++;
             }
   
@@ -66,7 +72,7 @@ int Message:: getRPCId(){
     return rpc_id;
 }
 
-char * Message:: getMessage(){      //CHANGED FROM void * to char *
+void * Message:: getMessage(){      //CHANGED FROM void * to char *
     return message;
 }
 

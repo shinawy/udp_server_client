@@ -10,7 +10,7 @@ private:
 
 public:
     Client(char * _hostname, int _port);
-    void send_request(char* message);
+    void send_request(Message* message);
     Message * execute(Message * _message);
     ~Client();
 };
