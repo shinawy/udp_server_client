@@ -2,4 +2,4 @@ run: serv.exe
 	./serv.exe
 
 serv.exe: main_server.cpp client.cpp message.cpp server.cpp udpclientsocket.cpp udpserversocket.cpp udpsocket.cpp
-	g++ -g main_server.cpp client.cpp message.cpp server.cpp udpclientsocket.cpp udpserversocket.cpp udpsocket.cpp -o serv.exe -lboost_system -lboost_serialization
+	g++ -g main_server.cpp client.cpp message.cpp server.cpp udpclientsocket.cpp udpserversocket.cpp udpsocket.cpp -o serv.exe -lboost_system -lboost_serialization -lpthread

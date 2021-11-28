@@ -11,6 +11,7 @@ int n;
 socklen_t len; 
        char* marshaled_message= class_message.marshal();
        class_message.setMessage(marshaled_message,strlen(marshaled_message));
+       class_message.encrypt();
     class_message. print_message_info();
     // cout<<"Marshaled Message From the object: "<<class_message->getMessage()<<endl;
     char *message = new char[sizeof(class_message)];
@@ -65,9 +66,16 @@ socklen_t len;
         boost::archive::text_iarchive ia(clientstream);
         ia >> server_message;
     }
+    
+
+
+    char* unmarshaled_message= server_message.demarshal();
+    server_message.setMessage(unmarshaled_message,strlen(unmarshaled_message));
+    
     cout<<"message_buffer in the server: "<< message_buffer<<endl; 
     cout<<"the stream in the server contains: "<< clientstream.str()<<endl;
     printf("Server : \n");
+
     server_message.print_message_info();
     
    

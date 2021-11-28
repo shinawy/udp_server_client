@@ -64,6 +64,85 @@ char * Message:: marshal (){
     return marshalled_message;
 }
 
+char * Message:: demarshal (){
+    char* unmarshalled_message;
+    unmarshalled_message = (char*)malloc(sizeof(char) * SIZE);
+ 
+    int i, j, k = 0;
+    int num = 0;
+    int count_bits = 0;
+    
+    for (i = 0; i < message_size; i += 4) {
+        num = 0, count_bits = 0;
+        for (j = 0; j < 4; j++) {
+             
+            if (message[i + j] != '=')
+            {
+                num = num << 6;
+                count_bits += 6;
+            }
+
+            if (message[i + j] >= 'A' && message[i + j] <= 'Z')
+                num = num | (message[i + j] - 'A');
+
+            else if (message[i + j] >= 'a' && message[i + j] <= 'z')
+                num = num | (message[i + j] - 'a' + 26);
+
+            else if (message[i + j] >= '0' && message[i + j] <= '9')
+                num = num | (message[i + j] - '0' + 52);
+ 
+            else if (message[i + j] == '+')
+                num = num | 62;
+ 
+            else if (message[i + j] == '/')
+                num = num | 63;
+            
+            else {
+                num = num >> 2;
+                count_bits -= 2;
+            }
+        }
+ 
+        while (count_bits != 0)
+        {
+            count_bits -= 8;
+            unmarshalled_message[k++] = (num >> count_bits) & 255;
+        }
+    }
+ 
+    unmarshalled_message[k] = '\0';
+ 
+    return unmarshalled_message;
+}
+
+void Message:: encrypt() {
+    key = rand();
+    
+    string encrypted = "";
+
+    for (int i=0;i<message.length();i++) {
+        if (isupper(message[i])) {
+            encrypted += char(int(message[i]+key-65)%26 +65);
+        } else {
+            encrypted += char(int(message[i]+key-97)%26 +97);
+        }
+    }
+    
+    message = encrypted;
+}
+
+void Message:: decrypt() {
+    string plain = "";
+    for (int i=0;i<message.length();i++) {
+        if (isupper(message[i])) {
+            plain += char(int(message[i]-key-65)%26 +65);
+        } else {
+            plain += char(int(message[i]-key-97)%26 +97);
+        }
+    }
+    message = plain;
+}
+
 int Message:: getOperation (){
     return operation;
 }

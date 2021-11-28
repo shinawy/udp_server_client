@@ -49,6 +49,11 @@ socklen_t len;
     cout<<"received 5las"<<endl;
     cout<<"size: "<<sizeof(client_message)<<endl;
 
+    //decrypt then unmarshalling
+    //client_message.decrypt();     
+    char* unmarshaled_message= client_message.demarshal();
+    client_message.setMessage(unmarshaled_message,strlen(unmarshaled_message));
+
     client_message.print_message_info();
     // cout<<"Size of the Message object : " <<  sizeof(*client_message)<<endl;
 
@@ -131,15 +136,13 @@ sendto(udpServerSocket->sock, histream.str().c_str(), size,
 
 
 void Server::serveRequest(){
-// int len, n;
-
-   while(true){
+    auto future = std::async([this]()->Message*{getRequest();});
+    
+    while(true){
        Message* client_message= getRequest();
        doOperation();
        sendReply(client_message);  
-    
-    // printf("Hello message sent.\n");
-   }
+    }
 
 }
 

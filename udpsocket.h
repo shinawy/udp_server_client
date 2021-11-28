@@ -10,7 +10,8 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include <pthread.h>
+#include <thread>
+#include <future>
 using namespace std;
 
 class UDPSocket {
