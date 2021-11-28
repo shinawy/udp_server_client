@@ -1,0 +1,5 @@
+run: boost.exe
+	./boost.exe
+
+boost.exe: boost_trial.cpp
+	g++ -g boost_trial.cpp -o boost.exe -lboost_system -lboost_serialization

@@ -6,26 +6,52 @@ udpClientSocket= new UDPClientSocket();
 udpClientSocket ->initializeClient(_hostname, _port);
 }
 
-void Client::send_request(Message* class_message){
+void Client::send_request(Message class_message){
 int n;
 socklen_t len; 
-       char* buffer [MAXLINE];
-       char* marshaled_message= class_message->marshal();
-       class_message->setMessage(marshaled_message,strlen(marshaled_message));
-    
+       char buffer [MAXLINE];
+       char* marshaled_message= class_message.marshal();
+       class_message.setMessage(marshaled_message,strlen(marshaled_message));
+    class_message. print_message_info();
+    // cout<<"Marshaled Message From the object: "<<class_message->getMessage()<<endl;
+    char *message = new char[sizeof(class_message)];
+     message = (char*) &class_message;
 
-    char *message = new char[sizeof(*class_message)];
-     message = (char *)class_message;
+ stringstream histream;
+{
+        boost::archive::text_oarchive oa(histream);
+        oa << class_message;
+    } // <-- destructor of text_oarchive
 
-    sendto(udpClientSocket -> sock, (const Message*)message, sizeof(*class_message),
+
+    // string hi= "helllo from the other side\n";
+   
+    // histream<<hi;
+    histream.seekg(0, ios::end);
+    int size = histream.tellg();
+
+    cout<<"the sstream contains in the client: "<< histream.str()<<endl;
+    cout<<"the stream size is:  "<<size<<endl;
+    Message* newclass_message= (Message* ) message;
+    // cout<<"Marshaled Message From the new object casted: "<<newclass_message->getMessage()<<endl;
+    newclass_message -> print_message_info();
+    ofstream outobj("client_obj.txt");
+    outobj.write(message, sizeof(class_message));
+    outobj.close();
+    sendto(udpClientSocket -> sock, histream.str().c_str(), size,
         MSG_CONFIRM, (const struct sockaddr *) &udpClientSocket->myAddr, 
             sizeof(udpClientSocket->myAddr));
+
+
+    // sendto(udpClientSocket -> sock, (char *) & class_message, sizeof(class_message),
+    //     MSG_CONFIRM, (const struct sockaddr *) &udpClientSocket->myAddr, 
+    //         sizeof(udpClientSocket->myAddr));
     // printf("Hello message sent.\n");
            
     n = recvfrom(udpClientSocket -> sock, (char *)buffer, MAXLINE, 
                 MSG_WAITALL, (struct sockaddr *) &udpClientSocket->myAddr,
                &len);
-    buffer[n] = "\0";
+    buffer[n] = '\0';
     printf("Server : %s\n", buffer);
 }
 

@@ -9,7 +9,7 @@ message_size=4096;
 
 //CHANGED void * to char *
 Message:: Message(MessageType p_message_type,int p_operation, char * p_message, size_t p_message_size,int p_rpc_id){
-    message_type= p_message_type;
+    message_type= p_message_type; 
     operation = p_operation;
     message = p_message;
     message_size = p_message_size;
@@ -24,7 +24,7 @@ char * Message:: marshal (){
     char *marshalled_message = (char *) malloc(SIZE * sizeof(char));
     int msg_size = message_size;
     
-    char* message_char= (char*) message;
+    char* message_char=  (char*) message.c_str();
     int index, no_of_bits = 0, padding = 0, val = 0, count = 0, temp;
     int i, j, k = 0;
       
@@ -72,8 +72,8 @@ int Message:: getRPCId(){
     return rpc_id;
 }
 
-void * Message:: getMessage(){      //CHANGED FROM void * to char *
-    return message;
+string Message:: getMessage(){      //CHANGED FROM void * to char *
+    return message.c_str();
 }
 
 size_t Message:: getMessageSize(){
@@ -84,17 +84,26 @@ MessageType Message:: getMessageType(){
     return message_type;
 }
 
-void Message:: setOperation (int _operation){
-    operation = _operation;
+void Message:: setOperation (int p_operation){
+    operation = p_operation;
 }
 
-void Message:: setMessage (void * message, size_t message_size){
-    message = message;
-    message_size = message_size;
+void Message:: setMessage (char * p_message, size_t p_message_size){
+    message = p_message;
+    message_size = p_message_size;
 }
 
-void Message:: setMessageType (MessageType message_type){
-    message_type = message_type; 
+void Message:: setMessageType (MessageType p_message_type){
+    message_type = p_message_type; 
+}
+
+void Message::print_message_info(){
+    cout<<"Message INFO:   \n";
+    cout<<"Message: "<<message<<endl;
+    cout<<"MessageType: "<< message_type<<endl;
+    cout<<"MessageOperation: "<<operation<<endl;
+    cout<<"MessageRPCID: "<<rpc_id<<endl; 
+    cout<<"END OF INFOO......"<<endl;
 }
 
 Message:: ~Message(){

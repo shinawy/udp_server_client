@@ -15,7 +15,7 @@ int main(){
     getline(cin,comm);
     MessageType message_type= Request;
     Message* client_message= new Message(message_type,0, (char*)comm.c_str(), comm.length()+1,1);
-    myclient.send_request(client_message);
+    myclient.send_request(*client_message);
     }while (comm != "wq!");
     return 0; 
 }

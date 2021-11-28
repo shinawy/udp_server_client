@@ -7,7 +7,14 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <fstream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/vector.hpp>
+#include <iomanip>
+#define MaxNum 1024
 using namespace std; 
+
 
 #ifndef MESSAGE_H
 #define MESSAGE_H
@@ -15,10 +22,15 @@ using namespace std;
 enum MessageType { Request, Reply};
 
 class Message {
+
 public:
+    friend class boost::serialization::access;
+    template <class Archive> void serialize(Archive& ar, unsigned) {
+        ar &message_type &operation &message &message_size &rpc_id;
+    }
     MessageType message_type;
     int operation;
-    void * message;             //CHANGED FROM void * to char *
+    string message;              //CHANGED FROM void * to char *
     size_t message_size;
     int rpc_id;
 
@@ -29,12 +41,13 @@ public:
     char * marshal ();
     int getOperation ();
     int getRPCId();
-    void * getMessage();    //CHANGED FROM void * to char *
+    string getMessage();    //CHANGED FROM void * to char *
     size_t getMessageSize();
     MessageType getMessageType();
     void setOperation (int _operation);
-    void setMessage (void * message, size_t message_size);
+    void setMessage (char * message, size_t message_size);
     void setMessageType (MessageType message_type);
+    void print_message_info();
 
 ~Message();
 

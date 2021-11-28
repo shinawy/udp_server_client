@@ -3,6 +3,7 @@
 
 #include "udpclientsocket.h"
 #include "message.h"
+#include "sstream"
 
 class Client {
 private:
@@ -10,7 +11,7 @@ private:
 
 public:
     Client(char * _hostname, int _port);
-    void send_request(Message* message);
+    void send_request(Message message);
     Message * execute(Message * _message);
     ~Client();
 };

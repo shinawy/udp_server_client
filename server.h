@@ -1,6 +1,6 @@
 #include "udpserversocket.h"
 #include "message.h"
-
+#include <sstream>
 #ifndef SERVER_H
 #define SERVER_H
 
