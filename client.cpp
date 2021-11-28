@@ -9,7 +9,6 @@ udpClientSocket ->initializeClient(_hostname, _port);
 void Client::send_request(Message class_message){
 int n;
 socklen_t len; 
-       char buffer [MAXLINE];
        char* marshaled_message= class_message.marshal();
        class_message.setMessage(marshaled_message,strlen(marshaled_message));
     class_message. print_message_info();
@@ -48,11 +47,30 @@ socklen_t len;
     //         sizeof(udpClientSocket->myAddr));
     // printf("Hello message sent.\n");
            
-    n = recvfrom(udpClientSocket -> sock, (char *)buffer, MAXLINE, 
+
+
+    Message server_message;
+   char *message_buffer = new char[sizeof(server_message)];
+   
+
+   stringstream clientstream; 
+     n = recvfrom(udpClientSocket -> sock, (char*) message_buffer, MAXLINE, 
                 MSG_WAITALL, (struct sockaddr *) &udpClientSocket->myAddr,
                &len);
-    buffer[n] = '\0';
-    printf("Server : %s\n", buffer);
+    cout<<"received"<<endl; 
+    clientstream= (stringstream) message_buffer;
+
+    // Message client_message;
+    {
+        boost::archive::text_iarchive ia(clientstream);
+        ia >> server_message;
+    }
+    cout<<"message_buffer in the server: "<< message_buffer<<endl; 
+    cout<<"the stream in the server contains: "<< clientstream.str()<<endl;
+    printf("Server : \n");
+    server_message.print_message_info();
+    
+   
 }
 
 Message * Client:: execute(Message * _message){

@@ -97,12 +97,33 @@ Message * Server:: doOperation(){
 
 void Server:: sendReply (Message * _message){
 
-   char* hello_server= (char *)"This is the server\n";
+   string comm; 
+   getline(cin,comm);
+    MessageType message_type= Reply;
+    Message server_message(message_type,0, (char*)comm.c_str(), comm.length()+1,1);
+
+    char* marshaled_message= server_message.marshal();
+    server_message.setMessage(marshaled_message,strlen(marshaled_message));
+    cout<<"Message to be sent: \n";
+    server_message.print_message_info();
+    stringstream histream;
+{
+        boost::archive::text_oarchive oa(histream);
+        oa << server_message;
+    } // <-- destructor of text_oarchive
+
+
+    // string hi= "helllo from the other side\n";
+   
+    // histream<<hi;
+    histream.seekg(0, ios::end);
+    int size = histream.tellg();
+
    //_message -> marshal;
    socklen_t len;
     len = sizeof(udpServerSocket-> peerAddr);  //len is value/resuslt
 
-sendto(udpServerSocket->sock, (const char *)hello_server, strlen(hello_server), 
+sendto(udpServerSocket->sock, histream.str().c_str(), size, 
         MSG_CONFIRM, (const struct sockaddr *) &udpServerSocket->peerAddr,
             len);
 }
