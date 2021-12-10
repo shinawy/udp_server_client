@@ -1,84 +1,31 @@
 #include "client.h"
-#define MAXLINE 1024
+#define MAXLINE 65535
 
 Client:: Client(char * _hostname, int _port){
-udpClientSocket= new UDPClientSocket();
-udpClientSocket ->initializeClient(_hostname, _port);
+    udpClientSocket= new UDPClientSocket();
+    udpClientSocket -> initializeClient(_hostname, _port);
 }
 
 void Client::send_request(Message class_message){
-int n;
-socklen_t len; 
-       char* marshaled_message= class_message.marshal();
-       class_message.setMessage(marshaled_message,strlen(marshaled_message));
-       class_message.encrypt();
-    class_message. print_message_info();
-    // cout<<"Marshaled Message From the object: "<<class_message->getMessage()<<endl;
-    char *message = new char[sizeof(class_message)];
-     message = (char*) &class_message;
+    int n;
+    socklen_t len = sizeof(udpClientSocket-> peerAddr); 
+ 
+    class_message.Flatten();
 
- stringstream histream;
-{
-        boost::archive::text_oarchive oa(histream);
-        oa << class_message;
-    } // <-- destructor of text_oarchive
+    string client_request_message = class_message.getFlattenedMessage();
+    int message_size = client_request_message.length();
 
-
-    // string hi= "helllo from the other side\n";
+    sendto(udpClientSocket -> sock, (char*)client_request_message.c_str(), message_size,
+        MSG_CONFIRM, (const struct sockaddr *) &udpClientSocket->myAddr, len);  
    
-    // histream<<hi;
-    histream.seekg(0, ios::end);
-    int size = histream.tellg();
+    char* server_reply_message = new char[MAXLINE];
 
-    cout<<"the sstream contains in the client: "<< histream.str()<<endl;
-    cout<<"the stream size is:  "<<size<<endl;
-    Message* newclass_message= (Message* ) message;
-    // cout<<"Marshaled Message From the new object casted: "<<newclass_message->getMessage()<<endl;
-    newclass_message -> print_message_info();
-    ofstream outobj("client_obj.txt");
-    outobj.write(message, sizeof(class_message));
-    outobj.close();
-    sendto(udpClientSocket -> sock, histream.str().c_str(), size,
-        MSG_CONFIRM, (const struct sockaddr *) &udpClientSocket->myAddr, 
-            sizeof(udpClientSocket->myAddr));
-
-
-    // sendto(udpClientSocket -> sock, (char *) & class_message, sizeof(class_message),
-    //     MSG_CONFIRM, (const struct sockaddr *) &udpClientSocket->myAddr, 
-    //         sizeof(udpClientSocket->myAddr));
-    // printf("Hello message sent.\n");
-           
-
-
-    Message server_message;
-   char *message_buffer = new char[sizeof(server_message)];
-   
-
-   stringstream clientstream; 
-     n = recvfrom(udpClientSocket -> sock, (char*) message_buffer, MAXLINE, 
+    n = recvfrom(udpClientSocket -> sock, (char*) server_reply_message, MAXLINE, 
                 MSG_WAITALL, (struct sockaddr *) &udpClientSocket->myAddr,
                &len);
-    cout<<"received"<<endl; 
-    clientstream= (stringstream) message_buffer;
 
-    // Message client_message;
-    {
-        boost::archive::text_iarchive ia(clientstream);
-        ia >> server_message;
-    }
-    
-
-
-    char* unmarshaled_message= server_message.demarshal();
-    server_message.setMessage(unmarshaled_message,strlen(unmarshaled_message));
-    
-    cout<<"message_buffer in the server: "<< message_buffer<<endl; 
-    cout<<"the stream in the server contains: "<< clientstream.str()<<endl;
-    printf("Server : \n");
-
-    server_message.print_message_info();
-    
-   
+    cout << "Server : " << server_reply_message << endl;;
+ 
 }
 
 Message * Client:: execute(Message * _message){
@@ -86,5 +33,5 @@ Message * Client:: execute(Message * _message){
 }
 
 Client:: ~Client(){
-delete udpClientSocket;
+    delete udpClientSocket;
 }

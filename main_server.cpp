@@ -6,9 +6,11 @@
 #include "udpsocket.h"
 
 int main() {
-    cout <<"hello from server\n";
-    // Message* message= new Message();
-    Server myserver("macoserver",8080);
+    cout <<"Welcome to The Online Image Sharing Server\n";
+    
+    Server myserver("macoserver", 8080);
+    
     myserver.serveRequest();
+    
     return 0; 
 }

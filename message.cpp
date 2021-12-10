@@ -4,16 +4,16 @@ char char_set[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345678
 #define SIZE 1000
 
 Message:: Message(){
-message_size=4096;
+
 }
 
-//CHANGED void * to char *
-Message:: Message(MessageType p_message_type,int p_operation, char * p_message, size_t p_message_size,int p_rpc_id){
+Message:: Message(MessageType p_message_type,int p_operation, string p_message, size_t p_message_size,int p_rpc_id){
     message_type= p_message_type; 
     operation = p_operation;
     message = p_message;
     message_size = p_message_size;
     rpc_id = p_rpc_id;
+    flattened = "";
 }
 
 Message:: Message(char * marshalled_base64){
@@ -24,7 +24,7 @@ char * Message:: marshal (){
     char *marshalled_message = (char *) malloc(SIZE * sizeof(char));
     int msg_size = message_size;
     
-    char* message_char=  (char*) message.c_str();
+    char* message_char=  (char*)message.c_str();
     int index, no_of_bits = 0, padding = 0, val = 0, count = 0, temp;
     int i, j, k = 0;
       
@@ -118,7 +118,7 @@ char * Message:: demarshal (){
 void Message:: encrypt() {
     key = rand();
     
-    string encrypted = "";
+    char* encrypted = new char;
 
     for (int i=0;i<message.length();i++) {
         if (isupper(message[i])) {
@@ -132,7 +132,7 @@ void Message:: encrypt() {
 }
 
 void Message:: decrypt() {
-    string plain = "";
+    char* plain = new char;
     for (int i=0;i<message.length();i++) {
         if (isupper(message[i])) {
             plain += char(int(message[i]-key-65)%26 +65);
@@ -143,16 +143,63 @@ void Message:: decrypt() {
     message = plain;
 }
 
+bool Message::Flatten() {
+    flattened = "";
+    //flattened+=rpc_id;
+    //flattened+=seperator;
+    //flattened+=to_string(operation);
+    //flattened+=seperator;
+    flattened+=to_string(message_size);
+    flattened+=seperator;
+    flattened+=to_string((int)message_type);
+    flattened+=seperator;
+    flattened+=message;
+    flattened+='\0';
+
+    return true;
+}
+
+bool Message::unFlatten(string s)
+{
+	if(s=="")
+	{
+		perror("Nothing is there to be unflattened\n");
+		return false;
+	}
+	stringstream ss(s);
+	string tmp;
+	//ss>>rpc_id;	
+	//ss>>tmp;
+	//operation=stoi(tmp);
+    ss>>tmp;
+	message_size=stoi(tmp);
+	ss>>tmp;
+	message_type=(MessageType)stoi(tmp);
+	message="";
+	char c;
+
+	while(ss.get(c))
+	{
+		message+=c;
+	}
+	if(message.length()>0)message.erase(0,1);
+}
+
+string Message::getFlattenedMessage()
+{
+	return flattened;
+}
+
 int Message:: getOperation (){
     return operation;
 }
 
-int Message:: getRPCId(){
+string Message:: getRPCId(){
     return rpc_id;
 }
 
-string Message:: getMessage(){      //CHANGED FROM void * to char *
-    return message.c_str();
+string Message:: getMessage(){ 
+    return message;
 }
 
 size_t Message:: getMessageSize(){
@@ -177,12 +224,12 @@ void Message:: setMessageType (MessageType p_message_type){
 }
 
 void Message::print_message_info(){
-    cout<<"Message INFO:   \n";
+    cout<<"Message Info:   \n";
     cout<<"Message: "<<message<<endl;
-    cout<<"MessageType: "<< message_type<<endl;
-    cout<<"MessageOperation: "<<operation<<endl;
-    cout<<"MessageRPCID: "<<rpc_id<<endl; 
-    cout<<"END OF INFOO......"<<endl;
+    cout<<"Message Type: "<< message_type<<endl;
+    cout<<"Message Operation: "<<operation<<endl;
+    cout<<"Message RPCID: "<<rpc_id<<endl; 
+    cout<<"END OF MESSAGE INFO......"<<endl;
 }
 
 Message:: ~Message(){
