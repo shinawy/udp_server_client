@@ -1,5 +1,5 @@
 run: client.exe
 	./client.exe
 
-client.exe: main_client.cpp client.cpp message.cpp server.cpp udpclientsocket.cpp udpserversocket.cpp udpsocket.cpp
-	g++ main_client.cpp client.cpp message.cpp server.cpp udpclientsocket.cpp udpserversocket.cpp udpsocket.cpp -o client.exe -lboost_system -lboost_serialization -lpthread
+client.exe: main_client.cpp client.cpp message.cpp server.cpp udpclientsocket.cpp udpserversocket.cpp udpsocket.cpp user.cpp
+	g++ main_client.cpp client.cpp message.cpp server.cpp udpclientsocket.cpp udpserversocket.cpp udpsocket.cpp user.cpp -o client.exe -lboost_system -lboost_serialization -lpthread

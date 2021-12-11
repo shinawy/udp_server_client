@@ -1,8 +1,8 @@
 #include "server.h"
-#define MAXLINE 4096
+#define MAXLINE 65535
 
 Server::Server(char * _listen_hostname, int _listen_port){
-   udpServerSocket = new UDPServerSocket();
+    udpServerSocket = new UDPServerSocket();
 
     bool x  = udpServerSocket -> initializeServer(_listen_hostname, _listen_port);
     if (x) {
@@ -12,86 +12,25 @@ Server::Server(char * _listen_hostname, int _listen_port){
     }
 }
 
-Message * Server:: getRequest(){
-int n;
-socklen_t len;
-    len = sizeof(udpServerSocket-> peerAddr);  //len is value/resuslt
-    cout<<"len: "<<len<<endl;
-   char buffer[MAXLINE];
-   Message client_message;
-   char *message_buffer = new char[sizeof(client_message)];
-   
+Message* Server:: getRequest(){
+    int n;
+    socklen_t len;
+    
+    Message client_message;
+    
+    char* client_request_message = new char[MAXLINE];
 
-   stringstream servstream; 
-   n = recvfrom(udpServerSocket->sock,  (char*) message_buffer, MAXLINE, 
+    n = recvfrom(udpServerSocket->sock, client_request_message, MAXLINE, 
                 MSG_WAITALL, ( struct sockaddr *) &udpServerSocket->peerAddr,&len);
+
+
+    client_message.unFlatten(client_request_message);
+
+    char * message = (char*) client_message.getMessage().c_str();
+    int lsize = client_message.getMessageSize();
     
-    cout<<"received"<<endl; 
-    servstream= (stringstream) message_buffer;
-
-    // Message client_message;
-    {
-        boost::archive::text_iarchive ia(servstream);
-        ia >> client_message;
-    }
-    cout<<"message_buffer in the server: "<< message_buffer<<endl; 
-    cout<<"the stream in the server contains: "<< servstream.str()<<endl; 
-
-
-    // n = recvfrom(udpServerSocket->sock,  (Message*)& client_message, MAXLINE, 
-    //             MSG_WAITALL, ( struct sockaddr *) &udpServerSocket->peerAddr,&len);
-
-
-    // client_message = (Message*)&message_buffer; 
-    ofstream outobj("server_obj.txt");
-    outobj.write((char*)&client_message, sizeof(client_message));
-    outobj.close();
-    cout<<"received 5las"<<endl;
-    cout<<"size: "<<sizeof(client_message)<<endl;
-
-    //decrypt then unmarshalling
-    //client_message.decrypt();     
-    char* unmarshaled_message= client_message.demarshal();
-    client_message.setMessage(unmarshaled_message,strlen(unmarshaled_message));
-
-    client_message.print_message_info();
-    // cout<<"Size of the Message object : " <<  sizeof(*client_message)<<endl;
-
-    // strcpy(buffer, client_message -> getMessage());
-    //    buffer[n] = NULL;
-    //    MessageType message_type= Request;0
-    // Message* client_message= new Message(message_type,0, buffer, strlen(buffer),1);
-    
-    // char* body_message= (char*) client_message -> getMessage();
-
-    // char vmsg [client_message -> getMessageSize()]= client_message -> getMessage();
-    // printf("vmsg: %s\n", client_message -> getMessage());
-    // (uint8_t*) buni = (uint8_t*) vmsg;
-    // int j;
-    // for(j = 0; j < client_message->getMessageSize(); ++j)
-    // printf("%02x\n", ((uint8_t*) vmsg)[j]);
-
-// char* cmsg = (char*)calloc(sizeof(char), client_message->getMessageSize() + 1);
-
-// char* msg = static_cast<char*>( calloc(sizeof(char), client_message->getMessageSize() + 1) );
-
-// char* msg;
-// msg = client_message.getMessage();
-// msg= "manup";
-// printf("sizeof message new: %d\n", strlen(msg)); 
-
-
-// printf("client:::new::: %s\n", msg);
-// msg= (char*) vmsg; 
-//     char * cmsg= vmsg;
-
-// msg = vmsg;
-//     cout<< "Client:::: "<<msg<<endl;
-    // printf("Client : %s\n", (char*) vmsg);
-
-
-    // cout<<"Client::::::"<< client_message -> getMessage()<<endl;
-    cout<<"Size of the Message : " << client_message.getMessageSize()<<endl;
+    FILE *pOutput = fopen("image2.jpg", "wb+"); //write to image file
+    fwrite(message, 1, lsize, pOutput); 
 
     return &client_message;
 }
@@ -102,44 +41,23 @@ Message * Server:: doOperation(){
 
 void Server:: sendReply (Message * _message){
 
-   string comm; 
-   getline(cin,comm);
     MessageType message_type= Reply;
-    Message server_message(message_type,0, (char*)comm.c_str(), comm.length()+1,1);
+    
+    socklen_t len = sizeof(udpServerSocket-> peerAddr);  //len is value/resuslt
 
-    char* marshaled_message= server_message.marshal();
-    server_message.setMessage(marshaled_message,strlen(marshaled_message));
-    cout<<"Message to be sent: \n";
-    server_message.print_message_info();
-    stringstream histream;
-{
-        boost::archive::text_oarchive oa(histream);
-        oa << server_message;
-    } // <-- destructor of text_oarchive
+    string reply = "Image Size: " + to_string(_message->getMessageSize()) + "KB";
 
-
-    // string hi= "helllo from the other side\n";
-   
-    // histream<<hi;
-    histream.seekg(0, ios::end);
-    int size = histream.tellg();
-
-   //_message -> marshal;
-   socklen_t len;
-    len = sizeof(udpServerSocket-> peerAddr);  //len is value/resuslt
-
-sendto(udpServerSocket->sock, histream.str().c_str(), size, 
-        MSG_CONFIRM, (const struct sockaddr *) &udpServerSocket->peerAddr,
-            len);
+    sendto(udpServerSocket->sock, (char*)reply.c_str(), reply.length(), 
+        MSG_CONFIRM, (const struct sockaddr *) &udpServerSocket->peerAddr, len);
 }
 
 
 
 void Server::serveRequest(){
-    auto future = std::async([this]()->Message*{getRequest();});
+    //auto future = std::async([this]()->Message*{getRequest();});
     
     while(true){
-       Message* client_message= getRequest();
+       Message* client_message = getRequest();
        doOperation();
        sendReply(client_message);  
     }
