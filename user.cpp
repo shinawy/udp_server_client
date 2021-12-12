@@ -9,12 +9,30 @@ User:: User(string _username, string _password){
     password = _password;
 }
 
-bool User::login(string _username, string _password) {
+Json::Value User::login(string _username, string _password) {
     //LOGIN API
+
+    vector<string> keys= {"username", "password"};
+    vector<string> values= {_username,_password};
+    string url= "dist_sign_in";
+    string body= generate_body(keys,values);
+    cout<<"url_sign_in: "<<url<<endl<<"body: "<<body<<endl;
+
+    Json::Value jsvalue= call_api_json(base_url+url,body);
+    return jsvalue;
 }
 
-bool User::register_user(string _username, string _password) {
-    //LOGIN API
+Json::Value User::register_user(string _username, string _password, string fname, string lname) {
+    //Sign Up API  
+    vector<string> keys= {"username", "password", "first_name", "last_name"};
+    vector<string> values= {_username,_password, fname, lname};
+    string url= "dist_sign_up";
+    string body= generate_body(keys,values);
+    cout<<"url_sign_up: "<<url<<endl<<"body: "<<body<<endl;
+
+    Json::Value jsvalue= call_api_json(base_url+url,body);
+    return jsvalue;
+
 }
 
 Message* User::upload_image(string path) {
@@ -33,19 +51,19 @@ Message* User::upload_image(string path) {
 }
 
 
-void User::view_owned_images() {
+Json::Value User::view_owned_images() {
 
 }
 
-void User::remover_viewer(string viewer_username) {
+Json::Value User::remover_viewer(string viewer_username) {
 
 }
 
-void User::edit_viewer_quota(string viewer_username) {
+Json::Value User::edit_viewer_quota(string viewer_username) {
 
 }
 
-void User::view_image() {
+Json::Value User::view_image() {
 
 }
 
