@@ -50,18 +50,68 @@ Message* User::upload_image(string path) {
         return client_message;
 }
 
+void User::set_username(string _username){
+    username=_username;
+}
+string User::getusername(){
+    return username;
+}
 
-Json::Value User::view_owned_images() {
+Json::Value User::view_owned_images(string _username) {
+
+vector<string> keys= {"username"};
+    vector<string> values= {_username};
+    string url= "dist_get_image";
+    string body= generate_body(keys,values);
+    cout<<"url_sign_up: "<<url<<endl<<"body: "<<body<<endl;
+
+    Json::Value jsvalue= call_api_json(base_url+url,body);
+    return jsvalue;
+
 
 }
 
-Json::Value User::remover_viewer(string viewer_username) {
+Json::Value User::add_user_quota(string _username, string viewer_username,int quota ){
+vector<string> keys= {  "host_username", "guest_username",  "span"};
+    vector<string> values= {_username, viewer_username, to_string(quota)};
+    string url= "dist_edit_image_span";
+    string body= generate_body(keys,values);
+    cout<<"url_add_usr_quota: "<<url<<endl<<"body: "<<body<<endl;
+
+    Json::Value jsvalue= call_api_json(base_url+url,body);
+    return jsvalue;
 
 }
 
-Json::Value User::edit_viewer_quota(string viewer_username) {
+
+Json::Value User::remover_viewer(string _username, string viewer_username) {
+
+    vector<string> keys= {  "host_username", "guest_username",  "span"};
+    vector<string> values= {_username, viewer_username, "0"};
+    string url= "dist_edit_image_span";
+    string body= generate_body(keys,values);
+    cout<<"url_remove_usr_access: "<<url<<endl<<"body: "<<body<<endl;
+
+    Json::Value jsvalue= call_api_json(base_url+url,body);
+    return jsvalue;
 
 }
+
+Json::Value User::edit_viewer_quota(string _username, string viewer_username,int quota) {
+
+vector<string> keys= {  "host_username", "guest_username",  "span"};
+    vector<string> values= {_username, viewer_username, to_string(quota)};
+    string url= "dist_edit_image_span";
+    string body= generate_body(keys,values);
+    cout<<"url_edit_usr_quota: "<<url<<endl<<"body: "<<body<<endl;
+
+    Json::Value jsvalue= call_api_json(base_url+url,body);
+    return jsvalue;
+
+
+
+}
+
 
 Json::Value User::view_image() {
 

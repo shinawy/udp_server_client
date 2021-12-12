@@ -14,7 +14,7 @@ void Client::send_request(Message class_message){
 
     string client_request_message = class_message.getFlattenedMessage();
     int message_size = client_request_message.length();
-
+    // cout<<"Flattened Message: "<< client_request_message<<endl;
     sendto(udpClientSocket -> sock, (char*)client_request_message.c_str(), message_size,
         MSG_CONFIRM, (const struct sockaddr *) &udpClientSocket->myAddr, len);  
    

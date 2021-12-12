@@ -12,7 +12,6 @@
 #ifndef USER_H
 #define USER_H
 
-
 class User {
 private:
     string base_url="https://gizt35h8fh.execute-api.us-east-2.amazonaws.com/v1/";
@@ -27,9 +26,11 @@ public:
     void set_username(string _username);
     void set_password(string _password);
     Message* upload_image(string path);
-    Json::Value view_owned_images();
-    Json::Value remover_viewer(string viewer_username);
-    Json::Value edit_viewer_quota(string viewer_username);
+    string getusername(); 
+    Json::Value view_owned_images(string _username);
+    Json::Value remover_viewer(string _username, string viewer_username);
+    Json::Value edit_viewer_quota(string _username, string viewer_username,int quota);
+    Json::Value add_user_quota(string _username, string viewer_username,int quota );
     Json::Value view_image();
     ~User();
 };

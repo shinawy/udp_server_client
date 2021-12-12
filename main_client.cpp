@@ -36,6 +36,7 @@ bool client_log_in(string& username, string& password, User& usr){
     Json::Value response;
     input_user(username, password);
     response= usr.login(username,password);
+    usr.set_username(username);
     cout<<"response_client_log_in: "<<response<<endl;
     if (response["registered"]==0){
         cout<<"User Not registered, opening sign up page\n";
@@ -60,6 +61,8 @@ bool client_sign_up(string& username, string& password, User& usr){
     input_user(username, password); 
     input_user_fullname(firstname, lastname);    
     response= usr.register_user(username, password,firstname, lastname);
+    usr.set_username(username);
+
     cout<<"response_client_sign_up: "<< response<<endl;
     if (response["ERROR"]== "Username Already Registered"){
         cout<<"Try different username for sign up or choose to log in: \n";
@@ -129,13 +132,15 @@ int main() {
         cout << "1) Upload an Image\n";
         cout << "2) View Your Images\n";
         cout << "3) Removre Viewers\n";
-        cout << "3) Edit Viewers Quota\n";
-        cout << "5) View an Image\n";
-        cout << "6) Exit\n";
+        cout << "4) Edit Viewers Quota\n";
+        cout<<  "5) Grant user permission to see your images\n";
+        cout << "6) View an Image\n";
+        cout << "7) Exit\n";
         cout << "[*]------------------------------------------------------[*]\n";
          
         cin >> op;
 
+        cout<<"You are now logged in as "<<usr.getusername()<<endl;
         switch (op) {
             case 1: 
             {
@@ -144,37 +149,61 @@ int main() {
                 cin >> comm;
                 Message* client_message = usr.upload_image(comm); 
                 myclient.send_request(*client_message);
+                break;
             }
             case 2: 
             {
-                usr.view_owned_images();
+                Json::Value res_images= usr.view_owned_images(usr.getusername());
+                cout<<"Result Images: "<< res_images<<endl;
+                break;
             }
                 
             
             case 3: 
             {
-                cout << "Enter Viewer username: \n";
+                cout << "Enter the username for the person you want to remove: \n";
                 string user;
                 cin >> user;
-                usr.remover_viewer(user);
+                usr.remover_viewer(usr.getusername(),user);
+                break;
             }
             case 4:
             {
                 cout << "Enter Viewer username: \n";
                 string user;
                 cin >> user;
-                usr.edit_viewer_quota(user);
+
+                int quota;
+                cout<<"Enter the new Quota you want to assign for this person: \n";
+                cin>>quota;
+                usr.edit_viewer_quota(usr.getusername(),user,quota);
+                break;
             }
-            case 5: 
+
+            case 5: {
+                string guest_user_name;
+                cout<<"Enter the username for the person you want to grant access\n";
+                cin>>guest_user_name;
+
+                int quota;
+                cout<<"Enter the Quota for this person: \n";
+                cin>>quota;
+             
+                Json::Value res_add_perm = usr.add_user_quota(usr.getusername(),guest_user_name,quota);
+                cout<<"Granted access Response: "<<res_add_perm<<endl;
+                break; 
+            }
+            case 6:{ 
              
                 usr.view_image();
-
-            case 6:
+                break;
+            }
+            case 7:
                 return 0;
         }
 
 
-    } while (op != 6);
+    } while (op != 7);
 
     return 0; 
 }
