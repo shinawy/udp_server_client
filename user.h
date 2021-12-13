@@ -31,7 +31,7 @@ public:
     Json::Value remover_viewer(string _username, string viewer_username);
     Json::Value edit_viewer_quota(string _username, string viewer_username,int quota);
     Json::Value add_user_quota(string _username, string viewer_username,int quota );
-    Json::Value view_image();
+    Json::Value view_image(string _username, string viewer_username);
     ~User();
 };
 #endif // USER_H

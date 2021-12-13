@@ -134,8 +134,9 @@ int main() {
         cout << "3) Removre Viewers\n";
         cout << "4) Edit Viewers Quota\n";
         cout<<  "5) Grant user permission to see your images\n";
-        cout << "6) View an Image\n";
+        cout << "6) View Images for Other users\n";
         cout << "7) Exit\n";
+        cout<<  "8) Log in with another user account\n";
         cout << "[*]------------------------------------------------------[*]\n";
          
         cin >> op;
@@ -194,12 +195,24 @@ int main() {
                 break; 
             }
             case 6:{ 
-             
-                usr.view_image();
+                string username; 
+                cout<<"Enter the username you want to see their picture\n"; 
+                cin>> username;
+                Json::Value res_view_other =usr.view_image(username,usr.getusername());
+                cout<<"Photos of other user called "<<username<<": "<<endl<<res_view_other<<endl;
                 break;
             }
             case 7:
                 return 0;
+            
+            case 8:{
+            ans= client_log_in(username, password, usr);
+            if (ans)
+                cout<<"USER successfully logged in"<<endl; 
+            else
+                cout<<"User is not logged in"<<endl;
+            break;    
+            }
         }
 
 

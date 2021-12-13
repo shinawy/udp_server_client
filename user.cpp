@@ -113,7 +113,15 @@ vector<string> keys= {  "host_username", "guest_username",  "span"};
 }
 
 
-Json::Value User::view_image() {
+Json::Value User::view_image(string _username, string viewer_username) {
+vector<string> keys= {  "host_username", "guest_username"};
+    vector<string> values= {_username, viewer_username};
+    string url= "dist_get_image_for_certain_user";
+    string body= generate_body(keys,values);
+    cout<<"url_view_other_image: "<<url<<endl<<"body: "<<body<<endl;
+
+    Json::Value jsvalue= call_api_json(base_url+url,body);
+    return jsvalue;
 
 }
 
