@@ -14,6 +14,7 @@ private:
 public:
     Server(char * _listen_hostname, int _listen_port);
     void serveRequest();
+    string receive_message();
     ~Server();
 };
 #endif // SERVER_H

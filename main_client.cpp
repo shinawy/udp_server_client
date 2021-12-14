@@ -123,7 +123,6 @@ int main() {
             
     }
 
-
     int op;           
 
     do{
@@ -142,14 +141,19 @@ int main() {
         cin >> op;
 
         cout<<"You are now logged in as "<<usr.getusername()<<endl;
+
+        // Creating a directory
+        if (mkdir((char*)username.c_str(), 0777) == -1)
+            cerr << "Error :  " << strerror(errno) << endl;
+
         switch (op) {
             case 1: 
             {
                 printf("Enter Image Path: \n");
                 string comm;
                 cin >> comm;
-                Message* client_message = usr.upload_image(comm); 
-                myclient.send_request(*client_message);
+                Message* client_message = usr.upload_image(myclient, comm); 
+                myclient.send_request(*client_message, usr.getusername());
                 break;
             }
             case 2: 

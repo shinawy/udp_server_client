@@ -11,7 +11,8 @@ private:
 
 public:
     Client(char * _hostname, int _port);
-    void send_request(Message message);
+    void send_request(Message message, string username);
+    void send_message(string message);
     Message * execute(Message * _message);
     ~Client();
 };

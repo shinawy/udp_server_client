@@ -9,7 +9,7 @@ int main() {
     cout <<"Welcome to The Online Image Sharing Server\n";
     
     Server myserver("macoserver", 8080);
-    
+
     myserver.serveRequest();
     
     return 0; 

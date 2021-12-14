@@ -177,7 +177,7 @@ bool Message::unFlatten(string s)
 	message_type=(MessageType)stoi(tmp);
 	message="";
 	char c;
-
+    
 	while(ss.get(c))
 	{
 		message+=c;

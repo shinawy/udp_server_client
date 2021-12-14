@@ -35,17 +35,23 @@ Json::Value User::register_user(string _username, string _password, string fname
 
 }
 
-Message* User::upload_image(string path) {
+Message* User::upload_image(Client client, string path) {
         std::ifstream fin(path, std::ios::in | std::ios::binary);
         std::ostringstream oss;
         oss << fin.rdbuf();
         std::string data(oss.str());
 
         int size = data.length();
-     
+
+        std::ofstream out("output.txt");
+        out << data;
+        out.close();
+
         MessageType message_type= Request;
         
         Message* client_message= new Message(message_type, 0, data, size, 1);
+
+        client.send_request(*client_message, this->username);
     
         return client_message;
 }

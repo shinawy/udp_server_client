@@ -15,7 +15,6 @@
 class User {
 private:
     string base_url="https://gizt35h8fh.execute-api.us-east-2.amazonaws.com/v1/";
-
     string username, password;
 
 public:
@@ -25,7 +24,7 @@ public:
     Json::Value register_user(string username, string password, string fname, string lname);
     void set_username(string _username);
     void set_password(string _password);
-    Message* upload_image(string path);
+    Message* upload_image(Client client, string path);
     string getusername(); 
     Json::Value view_owned_images(string _username);
     Json::Value remover_viewer(string _username, string viewer_username);

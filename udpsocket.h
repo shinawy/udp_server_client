@@ -1,6 +1,3 @@
-#ifndef UDPSOCKET_H
-#define UDPSOCKET_H
-
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +10,9 @@
 #include <thread>
 #include <future>
 using namespace std;
+
+#ifndef UDPSOCKET_H
+#define UDPSOCKET_H
 
 class UDPSocket {
 public:
